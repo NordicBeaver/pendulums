@@ -11,19 +11,26 @@ function main() {
     return;
   }
 
-  context.beginPath();
-  context.arc(100, 100, 20, 0, 2 * Math.PI);
-  context.stroke();
+  const circlePosition = { x: 100, y: 100 };
+  const circleSpeed = 100;
 
   let lastFrameTime: number | null = null;
-  function animationFrame(time: number) {
+
+  const animationFrame = (time: number) => {
     if (lastFrameTime) {
       const deltaTime = time - lastFrameTime;
-      console.log('Animation frame', deltaTime);
+      const deltaTimeSeconds = deltaTime / 1000;
+
+      circlePosition.y += deltaTimeSeconds * circleSpeed;
+
+      context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+      context.beginPath();
+      context.arc(circlePosition.x, circlePosition.y, 20, 0, 2 * Math.PI);
+      context.stroke();
     }
     lastFrameTime = time;
     window.requestAnimationFrame(animationFrame);
-  }
+  };
   window.requestAnimationFrame(animationFrame);
 }
 
