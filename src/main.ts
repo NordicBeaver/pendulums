@@ -15,6 +15,15 @@ function scale(vector: Vector, scalar: number) {
   return result;
 }
 
+type Body = {
+  position: Vector;
+  speed: Vector;
+};
+
+type World = {
+  bodies: Body[];
+};
+
 function main() {
   const mainCanvas = document.getElementById('mainCanvas') as HTMLCanvasElement;
   mainCanvas.width = window.innerWidth;
@@ -26,8 +35,19 @@ function main() {
     return;
   }
 
-  let circlePosition: Vector = { x: 100, y: 500 };
-  let circleSpeed: Vector = { x: 300, y: -300 };
+  const firstBody: Body = {
+    position: { x: 100, y: 500 },
+    speed: { x: 300, y: -300 },
+  };
+  const secondBody: Body = {
+    position: { x: 400, y: 500 },
+    speed: { x: 300, y: -400 },
+  };
+
+  const world: World = {
+    bodies: [firstBody, secondBody],
+  };
+
   const gravity: Vector = { x: 0, y: 200 };
 
   let lastFrameTime: number | null = null;
@@ -36,13 +56,19 @@ function main() {
       const deltaTime = time - lastFrameTime;
       const deltaTimeSeconds = deltaTime / 1000;
 
-      circlePosition = add(circlePosition, scale(circleSpeed, deltaTimeSeconds));
-      circleSpeed = add(circleSpeed, scale(gravity, deltaTimeSeconds));
+      world.bodies = world.bodies.map((body) => {
+        const nextPosition = add(body.position, scale(body.speed, deltaTimeSeconds));
+        const nextSpeed = add(body.speed, scale(gravity, deltaTimeSeconds));
+        const nextBody: Body = { ...body, position: nextPosition, speed: nextSpeed };
+        return nextBody;
+      });
 
       context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
-      context.beginPath();
-      context.arc(circlePosition.x, circlePosition.y, 20, 0, 2 * Math.PI);
-      context.fill();
+      world.bodies.forEach((body) => {
+        context.beginPath();
+        context.arc(body.position.x, body.position.y, 20, 0, 2 * Math.PI);
+        context.fill();
+      });
     }
     lastFrameTime = time;
     window.requestAnimationFrame(animationFrame);
