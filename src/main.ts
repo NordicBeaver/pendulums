@@ -1,13 +1,6 @@
 import { Physics } from './physics';
+import { Render } from './render';
 import './style.css';
-
-function drawWorld(world: Physics.World, context: CanvasRenderingContext2D) {
-  world.bodies.forEach((body) => {
-    context.beginPath();
-    context.arc(body.position.x, body.position.y, 20, 0, 2 * Math.PI);
-    context.fill();
-  });
-}
 
 function main() {
   const mainCanvas = document.getElementById('mainCanvas') as HTMLCanvasElement;
@@ -31,7 +24,7 @@ function main() {
       world = Physics.updateWorld(world, deltaTimeSeconds);
 
       context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
-      drawWorld(world, context);
+      Render.drawWorld(world, context);
     }
     lastFrameTime = time;
     window.requestAnimationFrame(animationFrame);
