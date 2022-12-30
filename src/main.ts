@@ -22,6 +22,7 @@ type Body = {
 
 type World = {
   bodies: Body[];
+  gravity: Vector;
 };
 
 function main() {
@@ -46,9 +47,8 @@ function main() {
 
   const world: World = {
     bodies: [firstBody, secondBody],
+    gravity: { x: 0, y: 200 },
   };
-
-  const gravity: Vector = { x: 0, y: 200 };
 
   let lastFrameTime: number | null = null;
   const animationFrame = (time: number) => {
@@ -58,7 +58,7 @@ function main() {
 
       world.bodies = world.bodies.map((body) => {
         const nextPosition = add(body.position, scale(body.speed, deltaTimeSeconds));
-        const nextSpeed = add(body.speed, scale(gravity, deltaTimeSeconds));
+        const nextSpeed = add(body.speed, scale(world.gravity, deltaTimeSeconds));
         const nextBody: Body = { ...body, position: nextPosition, speed: nextSpeed };
         return nextBody;
       });
