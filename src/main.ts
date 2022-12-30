@@ -3,17 +3,23 @@ import { Render } from './render';
 import './style.css';
 
 export function initWorld() {
-  const firstBody: Physics.Body = {
+  const firstBody = Physics.createBody({
     position: { x: 100, y: 500 },
     speed: { x: 300, y: -300 },
-  };
-  const secondBody: Physics.Body = {
+  });
+  const secondBody = Physics.createBody({
     position: { x: 400, y: 500 },
     speed: { x: 300, y: -400 },
-  };
+  });
+
+  const firstConstraint = Physics.createStaticConstraint({
+    position: firstBody.position,
+    bodyId: firstBody.id,
+  });
 
   const world: Physics.World = {
     bodies: [firstBody, secondBody],
+    constraints: [firstConstraint],
     gravity: { x: 0, y: 200 },
   };
 
