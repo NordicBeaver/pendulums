@@ -27,7 +27,8 @@ function main() {
   }
 
   let circlePosition: Vector = { x: 100, y: 500 };
-  const circleSpeed: Vector = { x: 40, y: 20 };
+  let circleSpeed: Vector = { x: 300, y: -300 };
+  const gravity: Vector = { x: 0, y: 200 };
 
   let lastFrameTime: number | null = null;
   const animationFrame = (time: number) => {
@@ -36,6 +37,7 @@ function main() {
       const deltaTimeSeconds = deltaTime / 1000;
 
       circlePosition = add(circlePosition, scale(circleSpeed, deltaTimeSeconds));
+      circleSpeed = add(circleSpeed, scale(gravity, deltaTimeSeconds));
 
       context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
       context.beginPath();
