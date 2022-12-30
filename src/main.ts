@@ -1,5 +1,20 @@
 import './style.css';
 
+type Vector = {
+  x: number;
+  y: number;
+};
+
+function add(vector1: Vector, vector2: Vector) {
+  const result: Vector = { x: vector1.x + vector2.x, y: vector1.y + vector2.y };
+  return result;
+}
+
+function scale(vector: Vector, scalar: number) {
+  const result: Vector = { x: vector.x * scalar, y: vector.y * scalar };
+  return result;
+}
+
 function main() {
   const mainCanvas = document.getElementById('mainCanvas') as HTMLCanvasElement;
   mainCanvas.width = window.innerWidth;
@@ -11,8 +26,8 @@ function main() {
     return;
   }
 
-  const circlePosition = { x: 100, y: 500 };
-  const circleSpeed = { x: 40, y: 20 };
+  let circlePosition: Vector = { x: 100, y: 500 };
+  const circleSpeed: Vector = { x: 40, y: 20 };
 
   let lastFrameTime: number | null = null;
   const animationFrame = (time: number) => {
@@ -20,8 +35,7 @@ function main() {
       const deltaTime = time - lastFrameTime;
       const deltaTimeSeconds = deltaTime / 1000;
 
-      circlePosition.x += deltaTimeSeconds * circleSpeed.x;
-      circlePosition.y += deltaTimeSeconds * circleSpeed.y;
+      circlePosition = add(circlePosition, scale(circleSpeed, deltaTimeSeconds));
 
       context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
       context.beginPath();
