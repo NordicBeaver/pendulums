@@ -30,12 +30,23 @@ export namespace Physics {
   }
 
   export function updateWorld(world: World, deltaTime: number) {
-    const nextBodies = world.bodies.map((body) => {
+    let nextBodies = world.bodies.map((body) => {
       const nextPosition = Vector.add(body.position, Vector.scale(body.speed, deltaTime));
       const nextSpeed = Vector.add(body.speed, Vector.scale(world.gravity, deltaTime));
       const nextBody: Body = { ...body, position: nextPosition, speed: nextSpeed };
       return nextBody;
     });
+
+    world.constraints.forEach((constraint) => {
+      const body = nextBodies.find((b) => b.id === constraint.bodyId);
+      if (!body) {
+        return;
+      }
+
+      const bodyConstrained: Body = { ...body, position: constraint.position };
+      nextBodies = [...nextBodies.filter((b) => b.id !== body.id), bodyConstrained];
+    });
+
     const nextWorld: World = { ...world, bodies: nextBodies };
     return nextWorld;
   }
