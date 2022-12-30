@@ -11,22 +11,22 @@ function main() {
     return;
   }
 
-  const circlePosition = { x: 100, y: 100 };
-  const circleSpeed = 100;
+  const circlePosition = { x: 100, y: 500 };
+  const circleSpeed = { x: 40, y: 20 };
 
   let lastFrameTime: number | null = null;
-
   const animationFrame = (time: number) => {
     if (lastFrameTime) {
       const deltaTime = time - lastFrameTime;
       const deltaTimeSeconds = deltaTime / 1000;
 
-      circlePosition.y += deltaTimeSeconds * circleSpeed;
+      circlePosition.x += deltaTimeSeconds * circleSpeed.x;
+      circlePosition.y += deltaTimeSeconds * circleSpeed.y;
 
       context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
       context.beginPath();
       context.arc(circlePosition.x, circlePosition.y, 20, 0, 2 * Math.PI);
-      context.stroke();
+      context.fill();
     }
     lastFrameTime = time;
     window.requestAnimationFrame(animationFrame);
