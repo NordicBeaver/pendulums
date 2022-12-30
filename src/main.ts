@@ -2,6 +2,24 @@ import { Physics } from './physics';
 import { Render } from './render';
 import './style.css';
 
+export function initWorld() {
+  const firstBody: Physics.Body = {
+    position: { x: 100, y: 500 },
+    speed: { x: 300, y: -300 },
+  };
+  const secondBody: Physics.Body = {
+    position: { x: 400, y: 500 },
+    speed: { x: 300, y: -400 },
+  };
+
+  const world: Physics.World = {
+    bodies: [firstBody, secondBody],
+    gravity: { x: 0, y: 200 },
+  };
+
+  return world;
+}
+
 function main() {
   const mainCanvas = document.getElementById('mainCanvas') as HTMLCanvasElement;
   mainCanvas.width = window.innerWidth;
@@ -13,7 +31,7 @@ function main() {
     return;
   }
 
-  let world = Physics.initWorld();
+  let world = initWorld();
 
   let lastFrameTime: number | null = null;
   const animationFrame = (time: number) => {
