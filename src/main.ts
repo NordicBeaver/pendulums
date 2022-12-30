@@ -1,28 +1,14 @@
 import './style.css';
-
-type Vector = {
-  x: number;
-  y: number;
-};
-
-function add(vector1: Vector, vector2: Vector) {
-  const result: Vector = { x: vector1.x + vector2.x, y: vector1.y + vector2.y };
-  return result;
-}
-
-function scale(vector: Vector, scalar: number) {
-  const result: Vector = { x: vector.x * scalar, y: vector.y * scalar };
-  return result;
-}
+import { Vector } from './vector';
 
 type Body = {
-  position: Vector;
-  speed: Vector;
+  position: Vector.Vector;
+  speed: Vector.Vector;
 };
 
 type World = {
   bodies: Body[];
-  gravity: Vector;
+  gravity: Vector.Vector;
 };
 
 function initWorld() {
@@ -45,8 +31,8 @@ function initWorld() {
 
 function updateWorld(world: World, deltaTime: number) {
   const nextBodies = world.bodies.map((body) => {
-    const nextPosition = add(body.position, scale(body.speed, deltaTime));
-    const nextSpeed = add(body.speed, scale(world.gravity, deltaTime));
+    const nextPosition = Vector.add(body.position, Vector.scale(body.speed, deltaTime));
+    const nextSpeed = Vector.add(body.speed, Vector.scale(world.gravity, deltaTime));
     const nextBody: Body = { ...body, position: nextPosition, speed: nextSpeed };
     return nextBody;
   });
