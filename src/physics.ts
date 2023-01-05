@@ -47,8 +47,8 @@ export namespace Physics {
 
   export function updateWorld(world: World, deltaTime: number) {
     let nextBodies = world.bodies.map((body) => {
-      const nextPosition = Vector.add(body.position, Vector.scale(body.speed, deltaTime));
       const nextSpeed = Vector.add(body.speed, Vector.scale(world.gravity, deltaTime));
+      const nextPosition = Vector.add(body.position, Vector.scale(nextSpeed, deltaTime));
       const nextBody: Body = { ...body, position: nextPosition, speed: nextSpeed };
       return nextBody;
     });
