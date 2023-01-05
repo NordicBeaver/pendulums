@@ -1,25 +1,31 @@
 import { Physics } from './physics';
 import { Render } from './render';
 import './style.css';
+import { Vector } from './vector';
 
 export function initWorld() {
   const firstBody = Physics.createBody({
-    position: { x: 100, y: 500 },
-    speed: { x: 300, y: -300 },
+    position: { x: window.innerWidth / 2, y: 200 },
+    speed: { x: 0, y: 0 },
   });
   const secondBody = Physics.createBody({
-    position: { x: 400, y: 500 },
-    speed: { x: 300, y: -400 },
+    position: { x: window.innerWidth / 2 + 400, y: 200 },
+    speed: { x: 0, y: 0 },
   });
 
   const firstConstraint = Physics.createStaticConstraint({
     position: firstBody.position,
     bodyId: firstBody.id,
   });
+  const secondConstraint = Physics.createDistanceConstraint({
+    firstBodyId: firstBody.id,
+    secondBodyId: secondBody.id,
+    distance: Vector.distance(firstBody.position, secondBody.position),
+  });
 
   const world: Physics.World = {
     bodies: [firstBody, secondBody],
-    constraints: [firstConstraint],
+    constraints: [firstConstraint, secondConstraint],
     gravity: { x: 0, y: 200 },
   };
 
