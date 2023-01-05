@@ -12,6 +12,10 @@ export function initWorld() {
     position: { x: window.innerWidth / 2 + 400, y: 200 },
     speed: { x: 0, y: 0 },
   });
+  const thirdBody = Physics.createBody({
+    position: { x: window.innerWidth / 2 + 700, y: 200 },
+    speed: { x: 0, y: 0 },
+  });
 
   const firstConstraint = Physics.createStaticConstraint({
     position: firstBody.position,
@@ -22,10 +26,15 @@ export function initWorld() {
     secondBodyId: secondBody.id,
     distance: Vector.distance(firstBody.position, secondBody.position),
   });
+  const thirdConstraint = Physics.createDistanceConstraint({
+    firstBodyId: secondBody.id,
+    secondBodyId: thirdBody.id,
+    distance: Vector.distance(secondBody.position, thirdBody.position),
+  });
 
   const world: Physics.World = {
-    bodies: [firstBody, secondBody],
-    constraints: [firstConstraint, secondConstraint],
+    bodies: [firstBody, secondBody, thirdBody],
+    constraints: [firstConstraint, secondConstraint, thirdConstraint],
     gravity: { x: 0, y: 200 },
   };
 
