@@ -60,7 +60,10 @@ function main() {
       const deltaTime = time - lastFrameTime;
       const deltaTimeSeconds = deltaTime / 1000;
 
-      world = Physics.updateWorld(world, deltaTimeSeconds);
+      const substeps = 10;
+      for (let i = 0; i < substeps; i++) {
+        world = Physics.updateWorld(world, deltaTimeSeconds / substeps);
+      }
 
       context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
       Render.drawWorld(world, context);
