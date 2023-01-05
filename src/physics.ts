@@ -63,24 +63,46 @@ export namespace Physics {
         const bodyConstrained: Body = { ...body, position: constraint.position };
         nextBodies = [...nextBodies.filter((b) => b.id !== body.id), bodyConstrained];
       } else if (constraint.type === 'distance') {
-        const firstBody = nextBodies.find((b) => b.id === constraint.firstBodyId);
-        const secondBody = nextBodies.find((b) => b.id === constraint.secondBodyId);
-        if (!firstBody || !secondBody) {
+        const firstBody = world.bodies.find((b) => b.id === constraint.firstBodyId);
+        const secondBody = world.bodies.find((b) => b.id === constraint.secondBodyId);
+        const nextFirstBody = nextBodies.find((b) => b.id === constraint.firstBodyId);
+        const nextSecondBody = nextBodies.find((b) => b.id === constraint.secondBodyId);
+        if (!firstBody || !secondBody || !nextFirstBody || !nextSecondBody) {
           return;
         }
 
-        const distanceOffset = Vector.distance(firstBody.position, secondBody.position) - constraint.distance;
-        const firstBodyAdjustDirection = Vector.normalize(Vector.subtract(secondBody.position, firstBody.position));
-        const secondBodyAdjustDirection = Vector.normalize(Vector.subtract(firstBody.position, secondBody.position));
+        const distanceOffset = Vector.distance(nextFirstBody.position, nextSecondBody.position) - constraint.distance;
+        const firstBodyAdjustDirection = Vector.normalize(
+          Vector.subtract(nextSecondBody.position, nextFirstBody.position)
+        );
+        const secondBodyAdjustDirection = Vector.normalize(
+          Vector.subtract(nextFirstBody.position, nextSecondBody.position)
+        );
         const firstBodyAdjustment = Vector.scale(firstBodyAdjustDirection, distanceOffset / 2);
         const secondBodyAdjustment = Vector.scale(secondBodyAdjustDirection, distanceOffset / 2);
 
-        const firstBodyPositionConstrained = Vector.add(firstBody.position, firstBodyAdjustment);
-        const firstBodyConstrained: Body = { ...firstBody, position: firstBodyPositionConstrained };
+        const firstBodyPositionConstrained = Vector.add(nextFirstBody.position, firstBodyAdjustment);
+        const firstBodySpeedConstrained = Vector.scale(
+          Vector.subtract(firstBodyPositionConstrained, firstBody.position),
+          1 / deltaTime
+        );
+        const firstBodyConstrained: Body = {
+          ...nextFirstBody,
+          position: firstBodyPositionConstrained,
+          speed: firstBodySpeedConstrained,
+        };
         nextBodies = [...nextBodies.filter((b) => b.id !== firstBodyConstrained.id), firstBodyConstrained];
 
-        const secondBodyPositionConstrained = Vector.add(secondBody.position, secondBodyAdjustment);
-        const secondBodyConstrained: Body = { ...secondBody, position: secondBodyPositionConstrained };
+        const secondBodyPositionConstrained = Vector.add(nextSecondBody.position, secondBodyAdjustment);
+        const secondBodySpeedConstrained = Vector.scale(
+          Vector.subtract(secondBodyPositionConstrained, secondBody.position),
+          1 / deltaTime
+        );
+        const secondBodyConstrained: Body = {
+          ...nextSecondBody,
+          position: secondBodyPositionConstrained,
+          speed: secondBodySpeedConstrained,
+        };
         nextBodies = [...nextBodies.filter((b) => b.id !== secondBodyConstrained.id), secondBodyConstrained];
       }
     });
